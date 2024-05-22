@@ -21,5 +21,7 @@ public:
 	friend std::ostream& operator<<(std::ostream&, const Galois_Field_PB&); // output polynomial as polynomial
 	std::string return_polynomial_as_binary_string() const;
 	std::string return_polynomial_as_hex_string() const;
-
+	Galois_Field_PB operator+(const Galois_Field_PB&);
+	Galois_Field_PB operator*(const Galois_Field_PB&);
+	
 };

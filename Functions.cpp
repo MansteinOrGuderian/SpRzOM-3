@@ -71,15 +71,50 @@ std::ostream& operator<< (std::ostream& out, const Galois_Field_PB& Data) {
 }
 
 std::string Galois_Field_PB::return_polynomial_as_binary_string() const {
-	std::string polynomial_as_string;
+	std::string polynomial_as_binary_string;
 	int current_position = size_of_field - 1;
 	while (current_position >= 0) {
-		polynomial_as_string += array_of_coefficients_of_polynomial.test(current_position) ? '1' : '0';
+		polynomial_as_binary_string += (array_of_coefficients_of_polynomial.test(current_position) ? '1' : '0');
 		current_position--; // using inline in bitset function test(), which return 1, if bit in current_position set to 1
 	}
-	return polynomial_as_string;
+	return polynomial_as_binary_string;
 }
 
 std::string Galois_Field_PB::return_polynomial_as_hex_string() const {
-	return "0";
+	std::string polynomial_as_hex_string;
+	unsigned int current_index_of_bit = 0; 
+	while (current_index_of_bit < size_of_field) {
+		int current_hex_symbol_in_int = 0;
+		unsigned int current_index_in_four_bit_subsequence = 0;
+		while (current_index_in_four_bit_subsequence < 4 && (current_index_of_bit + current_index_in_four_bit_subsequence) < size_of_field) { // while we are inside the number
+			if (array_of_coefficients_of_polynomial.test(current_index_of_bit + current_index_in_four_bit_subsequence)) // check, if under consideration position of binary string setted to 1
+				current_hex_symbol_in_int = (current_hex_symbol_in_int | (1 << current_index_in_four_bit_subsequence)); // increasing value, if bit was equal to 1
+			current_index_in_four_bit_subsequence++;
+		}
+		char current_hex_digit;
+		if (current_hex_symbol_in_int >= 0 && current_hex_symbol_in_int <= 9)
+			current_hex_digit = (char)current_hex_symbol_in_int + '0'; // 1...9
+		else 
+			current_hex_digit = (char)current_hex_symbol_in_int + 'a' - 10; // a...f
+		polynomial_as_hex_string = current_hex_digit + polynomial_as_hex_string;
+		current_index_of_bit += 4; // 4 bit == 1 hex digit
+	}
+	long int index_of_first_significant_digit = polynomial_as_hex_string.find_first_not_of('0'); // index, before which delete 0
+	if (index_of_first_significant_digit != -1) // if not empty string
+		polynomial_as_hex_string.erase(polynomial_as_hex_string.begin(), polynomial_as_hex_string.begin() + index_of_first_significant_digit);
+	else
+		polynomial_as_hex_string = "0"; 
+	return polynomial_as_hex_string;
+}
+
+
+Galois_Field_PB Galois_Field_PB::operator+(const Galois_Field_PB& Right_polynomial) {
+	Galois_Field_PB result_of_summing = this->array_of_coefficients_of_polynomial ^ Right_polynomial.array_of_coefficients_of_polynomial; // ^ is XOR == + mod 2
+	return result_of_summing;
+}
+
+Galois_Field_PB Galois_Field_PB::operator*(const Galois_Field_PB& Right_polynomial) {
+	Galois_Field_PB result_of_multiplication;
+	// will be soon
+	return result_of_multiplication;
 }
