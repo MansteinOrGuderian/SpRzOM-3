@@ -18,5 +18,8 @@ public:
 	static Galois_Field_PB convert_line_to_array_of_polynomial_coefficients(const std::string&, bool if_binary_string_or_hex); // binary = 1, hex = 0
 	bool operator==(const Galois_Field_PB&);
 	bool operator!=(const Galois_Field_PB&);
-	friend std::ostream& operator<<(std::ostream&, const Galois_Field_PB&); // output polynomial as string
+	friend std::ostream& operator<<(std::ostream&, const Galois_Field_PB&); // output polynomial as polynomial
+	std::string return_polynomial_as_binary_string() const;
+	std::string return_polynomial_as_hex_string() const;
+
 };

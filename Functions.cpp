@@ -32,8 +32,9 @@ Galois_Field_PB Galois_Field_PB::convert_line_to_array_of_polynomial_coefficient
 				current_hex_symbol_to_int = line_with_coefficients[current_index] - 'a' + 10;
 			else
 				throw std::exception("Unsupported symbol in line!");
-			for (int index = 4; index >= 0; index--) //convert hex value to binary; f == 1111 (most possible 4 bit)
-				binary_line_with_each_coefficients += (current_hex_symbol_to_int & (1 << index)); //check each bit of binary_code_of_hex_letter from most significant to least significant
+			for (int index = 3; index >= 0; index--) //convert hex value to binary; f == 1111 (most possible 4 bit)
+				binary_line_with_each_coefficients += ((current_hex_symbol_to_int & (1 << index)) ? '1' : '0'); //check each bit of binary_code_of_hex_letter from most significant to least significant
+			current_index++;
 		}
 		unsigned int binary_line_with_each_coefficients_length = binary_line_with_each_coefficients.length();
 		if (binary_line_with_each_coefficients_length > size_of_field)
@@ -59,6 +60,26 @@ bool Galois_Field_PB::operator!=(const Galois_Field_PB& Right_polynomial) {
 }
 
 std::ostream& operator<< (std::ostream& out, const Galois_Field_PB& Data) {
-	out << "Polynomial is:\t" << "\n\n";
-	return out;
+	out << "Polynomial is:\t";// << Data.array_of_coefficients_of_polynomial;
+	int degree = Data.size_of_field - 1;
+	int index_of_coefficient = Data.size_of_field - 1;
+	while (degree >= 0) {
+		out << Data.array_of_coefficients_of_polynomial[index_of_coefficient] << " * x^" << degree << (degree != 0 ? " + " : "\n\n");
+		degree--; index_of_coefficient--;
+	}
+	return out; 
+}
+
+std::string Galois_Field_PB::return_polynomial_as_binary_string() const {
+	std::string polynomial_as_string;
+	int current_position = size_of_field - 1;
+	while (current_position >= 0) {
+		polynomial_as_string += array_of_coefficients_of_polynomial.test(current_position) ? '1' : '0';
+		current_position--; // using inline in bitset function test(), which return 1, if bit in current_position set to 1
+	}
+	return polynomial_as_string;
+}
+
+std::string Galois_Field_PB::return_polynomial_as_hex_string() const {
+	return "0";
 }
