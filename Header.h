@@ -13,9 +13,9 @@ public:
 	Galois_Field_PB() : array_of_coefficients_of_polynomial{0} {}; // default constructor, coefficients of polynomial is 0 
 	Galois_Field_PB(unsigned int amount_of_bits) : array_of_coefficients_of_polynomial(amount_of_bits) {};
 	Galois_Field_PB(const std::bitset<size_of_field>& entered_coefficients) : array_of_coefficients_of_polynomial(entered_coefficients) {};
-	Galois_Field_PB(const std::string& line_of_coefficients);
+	Galois_Field_PB(const std::string& line_of_coefficients, bool if_binary_string_or_hex); // binary = 1, hex = 0
 
-	static Galois_Field_PB convert_line_to_array_of_polynomial_coefficients(const std::string&);
+	static Galois_Field_PB convert_line_to_array_of_polynomial_coefficients(const std::string&, bool if_binary_string_or_hex); // binary = 1, hex = 0
 	bool operator==(const Galois_Field_PB&);
 	bool operator!=(const Galois_Field_PB&);
 	friend std::ostream& operator<<(std::ostream&, const Galois_Field_PB&); // output polynomial as string
