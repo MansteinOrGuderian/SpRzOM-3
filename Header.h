@@ -23,5 +23,5 @@ public:
 	std::string return_polynomial_as_hex_string() const;
 	Galois_Field_PB operator+(const Galois_Field_PB&);
 	Galois_Field_PB operator*(const Galois_Field_PB&);
-	
+	Galois_Field_PB modulo_by_irreducible_polynomial(const std::bitset<2 * size_of_field - 1>&); // by some operation, increasing size of array_of_coefficients_of_polynomial
 };
