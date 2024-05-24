@@ -190,9 +190,23 @@ unsigned int Galois_Field_PB::trace() {
 	Galois_Field_PB trace("0", 0); // neutral element by addition is 0
 	unsigned int current_index = 0;
 	while (current_index < size_of_field) {
-		trace = trace + polynomial_to_which_needed_find_trace;
+		trace = (trace + polynomial_to_which_needed_find_trace);
 		polynomial_to_which_needed_find_trace = polynomial_to_which_needed_find_trace.square_polynomial(); // trace is sum of all conjugates polynomial to this polynomial, over our field F_2 trace can equal 0 or 1
 		current_index++;
 	}
 	return trace.array_of_coefficients_of_polynomial[0]; // returning the least significant bit
+}
+
+Galois_Field_PB Galois_Field_PB::inverse_element() {
+	if (*this == Galois_Field_PB("0", 0))
+		throw std::exception("Inverse element to null in field didn't exist!"); // In field all elements, exept null, have inverse regard operation of multiplication
+	Galois_Field_PB inverse_element = *this, auxiliary_variable = *this;
+	unsigned int current_index = 0;
+	while (current_index < size_of_field - 2) { //using Gorner algorithm
+		auxiliary_variable = auxiliary_variable.square_polynomial();
+		inverse_element = (inverse_element * auxiliary_variable);
+		current_index++;
+	}
+	inverse_element = inverse_element.square_polynomial();
+	return inverse_element;
 }
