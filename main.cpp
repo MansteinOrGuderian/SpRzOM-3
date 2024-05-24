@@ -9,4 +9,5 @@ int main() {
 	std::cout << (a * b).return_polynomial_as_hex_string() << "\n\n"; // +
 	std::cout << (a.square_polynomial()).return_polynomial_as_hex_string() << "\n\n"; // +
 	std::cout << (a.polynomimal_to_power(b)).return_polynomial_as_hex_string() << "\n\n"; // +
+	std::cout << a.trace() << "\n\n"; //+
 }

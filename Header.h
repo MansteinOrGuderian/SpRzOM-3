@@ -4,6 +4,7 @@
 #include <chrono> // for tracking time 
 #include <functional> // for tracking time
 #include <vector> // for tracking time
+double MeasureTime(std::function<void()> operation, unsigned int amount_of_measurements);
 
 struct Galois_Field_PB { // Irreducible polynomial is p(x) = x^173 + x^10 + x^2 + x + 1 //generator of the field
 private:
@@ -27,4 +28,5 @@ public:
 	Galois_Field_PB modulo_by_irreducible_polynomial(const std::bitset<2 * size_of_field - 1>&); // by some operation, increasing size of array_of_coefficients_of_polynomial
 	Galois_Field_PB square_polynomial();
 	Galois_Field_PB polynomimal_to_power(const Galois_Field_PB& degree_polymonial);
+	unsigned int trace();
 };

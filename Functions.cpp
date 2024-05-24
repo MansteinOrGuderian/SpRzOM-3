@@ -1,6 +1,23 @@
 #include "Header.h"
 
-
+double MeasureTime(std::function<void()> operation, unsigned int amount_of_measurements) {
+	double* time_for_all_tryes = new double[amount_of_measurements + 1]{};
+	int current_measurement = 0;
+	while (current_measurement < amount_of_measurements) {
+		auto start_time = std::chrono::high_resolution_clock::now();
+		operation();  // Executing operation
+		auto end_time = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> elapsed_time = end_time - start_time;
+		time_for_all_tryes[current_measurement] = elapsed_time.count();
+		std::cout << time_for_all_tryes[current_measurement] << '\n';
+		time_for_all_tryes[amount_of_measurements] += time_for_all_tryes[current_measurement];
+		current_measurement++;
+		std::cout << "Total:\t" << time_for_all_tryes[amount_of_measurements] << '\n';
+	}
+	double average_time = (time_for_all_tryes[amount_of_measurements] / amount_of_measurements);
+	delete[] time_for_all_tryes;
+	return average_time;
+}
 
 Galois_Field_PB Galois_Field_PB::convert_line_to_array_of_polynomial_coefficients(const std::string& line_with_coefficients, bool if_line_binary) {
 	if (if_line_binary == 1) {
@@ -155,15 +172,27 @@ Galois_Field_PB Galois_Field_PB::square_polynomial() {
 	return *this * *this;
 }
 
-Galois_Field_PB Galois_Field_PB::polynomimal_to_power(const Galois_Field_PB& degree_polymonial) {
+Galois_Field_PB Galois_Field_PB::polynomimal_to_power(const Galois_Field_PB& degree) { // degree is number
 	Galois_Field_PB polynomial_to_power = *this;
 	Galois_Field_PB result_of_getting_to_power("1", 0); // neutral element by multiplication is 1
 	unsigned int current_index = 0;
 	while (current_index < size_of_field) {
-		if (degree_polymonial.array_of_coefficients_of_polynomial.test(current_index) == 1)
+		if (degree.array_of_coefficients_of_polynomial.test(current_index) == 1)
 			result_of_getting_to_power = polynomial_to_power * result_of_getting_to_power;
 		polynomial_to_power = polynomial_to_power.square_polynomial();
 		current_index++;
 	}
 	return result_of_getting_to_power;
+}
+
+unsigned int Galois_Field_PB::trace() {
+	Galois_Field_PB polynomial_to_which_needed_find_trace = *this;
+	Galois_Field_PB trace("0", 0); // neutral element by addition is 0
+	unsigned int current_index = 0;
+	while (current_index < size_of_field) {
+		trace = trace + polynomial_to_which_needed_find_trace;
+		polynomial_to_which_needed_find_trace = polynomial_to_which_needed_find_trace.square_polynomial(); // trace is sum of all conjugates polynomial to this polynomial, over our field F_2 trace can equal 0 or 1
+		current_index++;
+	}
+	return trace.array_of_coefficients_of_polynomial[0]; // returning the least significant bit
 }
