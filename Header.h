@@ -30,3 +30,5 @@ public:
 	unsigned int trace();
 	Galois_Field_PB inverse_element();
 };
+
+std::string convertToLowercase(const std::string& input_string);

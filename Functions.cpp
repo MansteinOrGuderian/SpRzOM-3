@@ -19,6 +19,13 @@ double MeasureTime(std::function<void()> operation, unsigned int amount_of_measu
 	return average_time;
 }
 
+std::string convertToLowercase(const std::string& entered_string) {
+	std::string result = "";
+	for (char current_symbol : entered_string)
+		result += tolower(current_symbol);
+	return result;
+}
+
 Galois_Field_PB Galois_Field_PB::convert_line_to_array_of_polynomial_coefficients(const std::string& line_with_coefficients, bool if_line_binary) {
 	if (if_line_binary == 1) {
 		std::string binary_line_with_each_coefficients = line_with_coefficients;
@@ -77,7 +84,7 @@ bool Galois_Field_PB::operator!=(const Galois_Field_PB& Right_polynomial) {
 }
 
 std::ostream& operator<< (std::ostream& out, const Galois_Field_PB& Data) {
-	out << "Polynomial is:\t";// << Data.array_of_coefficients_of_polynomial;
+	out << "Polynomial is:\t"; // << Data.array_of_coefficients_of_polynomial;
 	int degree = Data.size_of_field - 1;
 	int index_of_coefficient = Data.size_of_field - 1;
 	while (degree >= 0) {
