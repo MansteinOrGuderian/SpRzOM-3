@@ -114,7 +114,7 @@ Galois_Field_PB Galois_Field_PB::operator+(const Galois_Field_PB& Right_polynomi
 }
 
 Galois_Field_PB Galois_Field_PB::modulo_by_irreducible_polynomial(const std::bitset<2 * size_of_field - 1>& polymonial_coefficients_after_some_action) {
-	std::bitset<2 * size_of_field - 1 > modulo_polynomial; // modulo-element that creates expansion of field
+	std::bitset<2 * size_of_field - 1 > modulo_polynomial; // modulo-element that creates expansion of field, x^173 + x^10 + x^2 + x + 1
 	modulo_polynomial[173] = modulo_polynomial[10] = modulo_polynomial[2] = modulo_polynomial[1] = modulo_polynomial[0] = 1; // setting coefficients of modulo polynomial
 	std::bitset<2 * size_of_field - 1 > entrance_polynomial_temp = polymonial_coefficients_after_some_action;
 
@@ -133,20 +133,37 @@ Galois_Field_PB Galois_Field_PB::modulo_by_irreducible_polynomial(const std::bit
 	return Galois_Field_PB(polynomial_taken_by_modulo_to_standard_size);
 }
 
-
 Galois_Field_PB Galois_Field_PB::operator*(const Galois_Field_PB& Right_polynomial) {
-	std::bitset<2 * size_of_field - 1 > result_of_multiplication; // in process could be grater than modulo, but than will resized
-	unsigned int current_index_in_left_polynomial = 0;
+	std::bitset<2 * size_of_field - 1 > result_of_multiplication{}; // in process result could be grater than modulo, but than will resized
 	unsigned int current_index_in_right_polynomial = 0;
 	while (current_index_in_right_polynomial < size_of_field) {
-		if (Right_polynomial.array_of_coefficients_of_polynomial.test(current_index_in_right_polynomial) == 1) // coefficient is 1
-			while (current_index_in_left_polynomial < size_of_field) {
+		if (Right_polynomial.array_of_coefficients_of_polynomial.test(current_index_in_right_polynomial) == 1) { // coefficient is 1
+			unsigned int current_index_in_left_polynomial = 0;
+			while (current_index_in_left_polynomial < size_of_field){
 				if (this->array_of_coefficients_of_polynomial.test(current_index_in_left_polynomial) == 1) // coefficient is 1
-					result_of_multiplication.flip(current_index_in_left_polynomial + current_index_in_right_polynomial); 
+					result_of_multiplication.flip(current_index_in_left_polynomial + current_index_in_right_polynomial);
 				current_index_in_left_polynomial++; // using inline in bitset function flip, that inverse (1->0, 0->1) bit in given position
 			}
+		}
 		current_index_in_right_polynomial++;
 	}
-	Galois_Field_PB multiplication_result_by_modulo = modulo_by_irreducible_polynomial(result_of_multiplication);
+	Galois_Field_PB multiplication_result_by_modulo(modulo_by_irreducible_polynomial(result_of_multiplication));
 	return multiplication_result_by_modulo;
+}
+
+Galois_Field_PB Galois_Field_PB::square_polynomial() {
+	return *this * *this;
+}
+
+Galois_Field_PB Galois_Field_PB::polynomimal_to_power(const Galois_Field_PB& degree_polymonial) {
+	Galois_Field_PB polynomial_to_power = *this;
+	Galois_Field_PB result_of_getting_to_power("1", 0); // neutral element by multiplication is 1
+	unsigned int current_index = 0;
+	while (current_index < size_of_field) {
+		if (degree_polymonial.array_of_coefficients_of_polynomial.test(current_index) == 1)
+			result_of_getting_to_power = polynomial_to_power * result_of_getting_to_power;
+		polynomial_to_power = polynomial_to_power.square_polynomial();
+		current_index++;
+	}
+	return result_of_getting_to_power;
 }
